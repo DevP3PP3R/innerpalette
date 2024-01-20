@@ -15,7 +15,7 @@ class LoginPage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomePage()));
+                    MaterialPageRoute(builder: (context) => HomePage()));
               },
               child: const Text('구글로그인'),
             ),
