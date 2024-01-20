@@ -41,8 +41,9 @@ class _ImageColorsState extends State<ImageColors> {
 
   void _onTapDown(TapDownDetails details) async {
     final RenderBox box = context.findRenderObject() as RenderBox;
-    final Offset localPosition = box.globalToLocal(details.globalPosition);
-
+    final Offset localPosition =
+        box.globalToLocal(details.globalPosition) + const Offset(10, 90);
+    print(localPosition.dy);
     final ui.Image image = await _loadImage(widget.previewImage);
     final double scaleX = image.width / box.size.width;
     final double scaleY = image.height / box.size.height;
