@@ -13,6 +13,8 @@ class ColorPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+
     return const MaterialApp(
       title: 'Image Colors',
       home: ImageColors(
@@ -29,12 +31,12 @@ class ImageColors extends StatefulWidget {
   const ImageColors({
     super.key,
     this.title,
-    required this.image,
+    this.image,
     this.imageSize,
   });
 
   final String? title;
-  final ImageProvider image;
+  final ImageProvider? image;
   final Size? imageSize;
 
   @override
@@ -58,17 +60,6 @@ class _ImageColorsState extends State<ImageColors> {
     if (widget.imageSize != null) {
       region = Offset.zero & widget.imageSize!;
     }
-    _updatePaletteGenerator(region);
-  }
-
-  Future<void> _updatePaletteGenerator(Rect? newRegion) async {
-    paletteGenerator = await PaletteGenerator.fromImageProvider(
-      widget.image,
-      size: widget.imageSize,
-      region: newRegion,
-      maximumColorCount: 1,
-    );
-    setState(() {});
   }
 
   Future<void> _onTapDown(TapDownDetails details) async {
@@ -77,7 +68,6 @@ class _ImageColorsState extends State<ImageColors> {
     final Offset localPosition = box.globalToLocal(details.globalPosition);
     final newRegion = (localPosition & const Size(1, 1));
 
-    await _updatePaletteGenerator(newRegion);
     setState(() {
       region = newRegion;
     });
@@ -144,7 +134,7 @@ class _ImageColorsState extends State<ImageColors> {
               child: Stack(children: <Widget>[
                 Image(
                   key: imageKey,
-                  image: widget.image,
+                  image: widget.image ?? const AssetImage('/assets/magic.png'),
                   width: widget.imageSize?.width,
                   height: widget.imageSize?.height,
                 ),
