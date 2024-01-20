@@ -10,8 +10,9 @@ class SingleColorDisplay extends StatelessWidget {
     final double deviceWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: deviceWidth * 0.8,
-      color: color ?? Colors.transparent,
+      width: deviceWidth * 0.5,
+      height: deviceWidth * 0.5,
+      color: color ?? const Color.fromARGB(255, 15, 123, 65),
     );
   }
 }

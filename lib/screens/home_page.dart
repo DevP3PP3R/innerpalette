@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:innerpalette/screens/my_page.dart';
+import 'package:innerpalette/widget/bottom_nav_bar.dart';
 import 'package:innerpalette/widget/color_picker.dart';
 import 'package:innerpalette/widget/image_upload.dart';
 
@@ -54,6 +55,7 @@ class _HomePageState extends State<HomePage> {
     double deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
+        bottomNavigationBar: const BtmNavBar(),
         appBar: AppBar(title: const Text('Home Page')),
         body: SingleChildScrollView(
           child: Center(
