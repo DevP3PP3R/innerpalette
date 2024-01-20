@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:innerpalette/widget/single_color.dart';
 import 'package:palette_generator/palette_generator.dart';
 
 const Color _kBackgroundColor = Color(0xffa0a0a0);
@@ -120,11 +121,39 @@ class _ImageColorsState extends State<ImageColors> {
 
     if (imageSize != null) {
       newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
-      if (newRegion.size.width < 4 && newRegion.size.width < 4) {
-        newRegion = Offset.zero & imageSize;
-      }
+      // if (newRegion.size.width < 4 || newRegion.size.height < 4) {
+      //   newRegion = null;
+      // }
     }
 
+    await _updatePaletteGenerator(newRegion);
+    setState(() {
+      region = newRegion;
+      dragRegion = null;
+      startDrag = null;
+    });
+  }
+
+  void _onTapDown(TapDownDetails details) async {
+    final RenderBox box =
+        imageKey.currentContext!.findRenderObject()! as RenderBox;
+    final Offset localPosition = box.globalToLocal(details.globalPosition);
+
+    final Rect newRegion = Rect.fromCircle(
+      center: localPosition,
+      radius: 3.0,
+    );
+
+    paletteGenerator = await PaletteGenerator.fromImageProvider(
+      widget.image,
+      size: widget.imageSize,
+      region: newRegion,
+      maximumColorCount: 20,
+    );
+
+    // setState(() {
+    //   dragRegion = newRegion;
+    // });
     await _updatePaletteGenerator(newRegion);
     setState(() {
       region = newRegion;
@@ -150,6 +179,7 @@ class _ImageColorsState extends State<ImageColors> {
               onPanUpdate: _onPanUpdate,
               onPanCancel: _onPanCancel,
               onPanEnd: _onPanEnd,
+              onTapDown: _onTapDown,
               child: Stack(children: <Widget>[
                 Image(
                   key: imageKey,
@@ -157,22 +187,27 @@ class _ImageColorsState extends State<ImageColors> {
                   width: widget.imageSize?.width,
                   height: widget.imageSize?.height,
                 ),
-                // This is the selection rectangle.
-                Positioned.fromRect(
-                    rect: dragRegion ?? region ?? Rect.zero,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: _kSelectionRectangleBackground,
-                          border: Border.all(
-                            color: _kSelectionRectangleBorder,
-                          )),
-                    )),
+                // This is the selection circle.
+                if (dragRegion != null || region != null)
+                  Positioned(
+                      left: (dragRegion ?? region!).left,
+                      top: (dragRegion ?? region!).top,
+                      width: (dragRegion ?? region!).width,
+                      height: (dragRegion ?? region!).height,
+                      child: Container(
+                        decoration: const ShapeDecoration(
+                            color: _kSelectionRectangleBackground,
+                            shape: CircleBorder(
+                              side: BorderSide(
+                                color: _kSelectionRectangleBorder,
+                              ),
+                            )),
+                      )),
               ]),
             ),
           ),
-          // Use a FutureBuilder so that the palettes will be displayed when
-          // the palette generator is done generating its data.
-          PaletteSwatches(generator: paletteGenerator),
+          //PaletteSwatches(generator: paletteGenerator),
+          SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
         ],
       ),
     );
