@@ -17,38 +17,23 @@ class ColorPicker extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Image Colors',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const ImageColors(
-        title: 'Image Colors',
-        image: AssetImage('assets/magic.png'),
-        imageSize: Size(256.0, 170.0),
-      ),
+    return const ImageColors(
+      image: AssetImage('assets/magic.png'),
+      imageSize: Size(256.0, 170.0),
     );
   }
 }
 
-/// The home page for this example app.
 @immutable
 class ImageColors extends StatefulWidget {
   /// Creates the home page.
   const ImageColors({
     super.key,
-    this.title,
     required this.image,
     this.imageSize,
   });
 
-  /// The title that is shown at the top of the page.
-  final String? title;
-
-  /// This is the image provider that is used to load the colors from.
   final ImageProvider image;
-
-  /// The dimensions of the image.
   final Size? imageSize;
 
   @override
@@ -85,7 +70,6 @@ class _ImageColorsState extends State<ImageColors> {
     setState(() {});
   }
 
-  // Called when the user starts to drag
   void _onPanDown(DragDownDetails details) {
     final RenderBox box =
         imageKey.currentContext!.findRenderObject()! as RenderBox;
@@ -97,7 +81,6 @@ class _ImageColorsState extends State<ImageColors> {
     });
   }
 
-  // Called as the user drags: just updates the region, not the colors.
   void _onPanUpdate(DragUpdateDetails details) {
     setState(() {
       currentDrag = currentDrag! + details.delta;
@@ -105,8 +88,6 @@ class _ImageColorsState extends State<ImageColors> {
     });
   }
 
-  // Called if the drag is canceled (e.g. by rotating the device or switching
-  // apps)
   void _onPanCancel() {
     setState(() {
       dragRegion = null;
@@ -114,7 +95,6 @@ class _ImageColorsState extends State<ImageColors> {
     });
   }
 
-  // Called when the drag ends. Sets the region, and updates the colors.
   Future<void> _onPanEnd(DragEndDetails details) async {
     final Size? imageSize = imageKey.currentContext?.size;
     Rect? newRegion;
@@ -161,170 +141,44 @@ class _ImageColorsState extends State<ImageColors> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: _kBackgroundColor,
-      appBar: AppBar(
-        title: Text(widget.title ?? ''),
-      ),
-      body: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            // GestureDetector is used to handle the selection rectangle.
-            child: GestureDetector(
-              onPanDown: _onPanDown,
-              onPanUpdate: _onPanUpdate,
-              onPanCancel: _onPanCancel,
-              onPanEnd: _onPanEnd,
-              onTapDown: _onTapDown,
-              child: Stack(children: <Widget>[
-                Image(
-                  key: imageKey,
-                  image: widget.image,
-                  width: widget.imageSize?.width,
-                  height: widget.imageSize?.height,
-                ),
-                // This is the selection circle.
-                if (dragRegion != null || region != null)
-                  Positioned(
-                      left: (dragRegion ?? region!).left,
-                      top: (dragRegion ?? region!).top,
-                      width: (dragRegion ?? region!).width,
-                      height: (dragRegion ?? region!).height,
-                      child: Container(
-                        decoration: const ShapeDecoration(
-                            color: _kSelectionRectangleBackground,
-                            shape: CircleBorder(
-                              side: BorderSide(
-                                color: _kSelectionRectangleBorder,
-                              ),
-                            )),
-                      )),
-              ]),
-            ),
-          ),
-          //PaletteSwatches(generator: paletteGenerator),
-          SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
-        ],
-      ),
-    );
-  }
-}
-
-/// A widget that draws the swatches for the [PaletteGenerator] it is given,
-/// and shows the selected target colors.
-class PaletteSwatches extends StatelessWidget {
-  /// Create a Palette swatch.
-  ///
-  /// The [generator] is optional. If it is null, then the display will
-  /// just be an empty container.
-  const PaletteSwatches({super.key, this.generator});
-
-  /// The [PaletteGenerator] that contains all of the swatches that we're going
-  /// to display.
-  final PaletteGenerator? generator;
-
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> swatches = <Widget>[];
-    final PaletteGenerator? paletteGen = generator;
-    if (paletteGen == null || paletteGen.colors.isEmpty) {
-      return Container();
-    }
-    for (final Color color in paletteGen.colors) {
-      swatches.add(PaletteSwatch(color: color));
-    }
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        Wrap(
-          children: swatches,
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: GestureDetector(
+            onTapDown: _onTapDown,
+            onPanDown: _onPanDown,
+            onPanUpdate: _onPanUpdate,
+            onPanCancel: _onPanCancel,
+            onPanEnd: _onPanEnd,
+            child: Stack(children: <Widget>[
+              Image(
+                key: imageKey,
+                image: widget.image,
+                width: widget.imageSize?.width,
+                height: widget.imageSize?.height,
+              ),
+              // This is the selection circle.
+              if (dragRegion != null || region != null)
+                Positioned(
+                    left: (dragRegion ?? region!).left,
+                    top: (dragRegion ?? region!).top,
+                    width: (dragRegion ?? region!).width,
+                    height: (dragRegion ?? region!).height,
+                    child: Container(
+                      decoration: const ShapeDecoration(
+                          color: _kSelectionRectangleBackground,
+                          shape: CircleBorder(
+                            side: BorderSide(
+                              color: _kSelectionRectangleBorder,
+                            ),
+                          )),
+                    )),
+            ]),
+          ),
         ),
-        Container(height: 30.0),
-        PaletteSwatch(
-            label: 'Dominant', color: paletteGen.dominantColor?.color),
-        PaletteSwatch(
-            label: 'Light Vibrant', color: paletteGen.lightVibrantColor?.color),
-        PaletteSwatch(label: 'Vibrant', color: paletteGen.vibrantColor?.color),
-        PaletteSwatch(
-            label: 'Dark Vibrant', color: paletteGen.darkVibrantColor?.color),
-        PaletteSwatch(
-            label: 'Light Muted', color: paletteGen.lightMutedColor?.color),
-        PaletteSwatch(label: 'Muted', color: paletteGen.mutedColor?.color),
-        PaletteSwatch(
-            label: 'Dark Muted', color: paletteGen.darkMutedColor?.color),
+        SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
       ],
     );
-  }
-}
-
-/// A small square of color with an optional label.
-@immutable
-class PaletteSwatch extends StatelessWidget {
-  /// Creates a PaletteSwatch.
-  ///
-  /// If the [paletteColor] has property `isTargetColorFound` as `false`,
-  /// then the swatch will show a placeholder instead, to indicate
-  /// that there is no color.
-  const PaletteSwatch({
-    super.key,
-    this.color,
-    this.label,
-  });
-
-  /// The color of the swatch.
-  final Color? color;
-
-  /// The optional label to display next to the swatch.
-  final String? label;
-
-  @override
-  Widget build(BuildContext context) {
-    // Compute the "distance" of the color swatch and the background color
-    // so that we can put a border around those color swatches that are too
-    // close to the background's saturation and lightness. We ignore hue for
-    // the comparison.
-    final HSLColor hslColor = HSLColor.fromColor(color ?? Colors.transparent);
-    final HSLColor backgroundAsHsl = HSLColor.fromColor(_kBackgroundColor);
-    final double colorDistance = math.sqrt(
-        math.pow(hslColor.saturation - backgroundAsHsl.saturation, 2.0) +
-            math.pow(hslColor.lightness - backgroundAsHsl.lightness, 2.0));
-
-    Widget swatch = Padding(
-      padding: const EdgeInsets.all(2.0),
-      child: color == null
-          ? const Placeholder(
-              fallbackWidth: 34.0,
-              fallbackHeight: 20.0,
-              color: Color(0xff404040),
-            )
-          : Container(
-              decoration: BoxDecoration(
-                  color: color,
-                  border: Border.all(
-                    color: _kPlaceholderColor,
-                    style: colorDistance < 0.2
-                        ? BorderStyle.solid
-                        : BorderStyle.none,
-                  )),
-              width: 34.0,
-              height: 20.0,
-            ),
-    );
-
-    if (label != null) {
-      swatch = ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 130.0, minWidth: 130.0),
-        child: Row(
-          children: <Widget>[
-            swatch,
-            Container(width: 5.0),
-            Text(label!),
-          ],
-        ),
-      );
-    }
-    return swatch;
   }
 }
