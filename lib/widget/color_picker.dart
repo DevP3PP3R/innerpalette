@@ -105,8 +105,6 @@ class _ImageColorsState extends State<ImageColors> {
     if (imageSize != null) {
       newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
     }
-
-    await _updatePaletteGenerator(newRegion);
     setState(() {
       region = newRegion;
       dragRegion = null;
