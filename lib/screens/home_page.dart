@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   final picker = ImagePicker();
   File? previewImage;
+  Color? selectedColor;
   deviceheight(BuildContext context) => MediaQuery.of(context).size.height;
 
   @override
