@@ -5,8 +5,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:innerpalette/screens/my_page.dart';
 import 'package:innerpalette/widget/bottom_nav_bar.dart';
 import 'package:innerpalette/widget/color_picker.dart';
-import 'package:innerpalette/widget/image_upload.dart';
 
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   final picker = ImagePicker();

@@ -1,13 +1,11 @@
 import 'dart:async';
-import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:innerpalette/widget/single_color.dart';
 import 'package:palette_generator/palette_generator.dart';
 
-const Color _kBackgroundColor = Color(0xffa0a0a0);
 const Color _kSelectionRectangleBackground = Color(0x15000000);
 const Color _kSelectionRectangleBorder = Color(0x80000000);
-const Color _kPlaceholderColor = Color(0x80404040);
 
 /// The main Application class.
 class ColorPicker extends StatelessWidget {
