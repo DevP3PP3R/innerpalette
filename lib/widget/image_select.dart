@@ -51,24 +51,38 @@ class _ImageSelectState extends State<ImageSelect> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Column(
+            children: [
+              Text((previewImage == null) ? '사진을 선택하세요' : '사진을 터치해서\n색상을 고르세요',
+                  style: const TextStyle(fontSize: 27)),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
                 onPressed: imageFromCamera,
-                icon: const Icon(Icons.camera_alt_rounded),
+                icon: Icon(
+                  Icons.camera_alt_rounded,
+                  size: (previewImage == null) ? 50 : 25,
+                ),
+              ),
+              const SizedBox(
+                width: 15,
               ),
               IconButton(
-                onPressed: imageFromGallery,
-                icon: const Icon(Icons.photo),
-              ),
+                  onPressed: imageFromGallery,
+                  icon: Icon(
+                    Icons.photo,
+                    size: (previewImage == null) ? 50 : 25,
+                  )),
             ],
           ),
-          Container(
-            child: (previewImage != null)
-                ? ColorPicker(previewImage: FileImage(previewImage!))
-                : const Text('이미지를 선택해주세요'),
-          ),
+          previewImage == null
+              ? Container(
+                  height: 30,
+                )
+              : ColorPicker(previewImage: FileImage(previewImage!))
         ],
       ),
     );

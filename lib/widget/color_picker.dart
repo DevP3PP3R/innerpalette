@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:innerpalette/widget/hsv_picker.dart';
 
 import 'block_picker.dart';
 import 'picker_widgets.dart';
@@ -40,7 +41,7 @@ class ImageColors extends StatefulWidget {
 }
 
 class _ImageColorsState extends State<ImageColors> {
-  Color? pickedColor = Colors.blue[600];
+  Color pickedColor = const ui.Color.fromARGB(255, 20, 92, 150);
   Color? selectedColor;
   final GlobalKey imageKey = GlobalKey();
 
@@ -124,46 +125,63 @@ class _ImageColorsState extends State<ImageColors> {
               width: deviceWidth * 0.3,
               height: deviceWidth * 0.3,
               decoration: BoxDecoration(
-                color: pickedColor ?? const Color.fromARGB(255, 182, 180, 180),
+                color: pickedColor,
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('가까운 색을 골라보세요'),
-                      content: SingleChildScrollView(
-                        child: BlockPicker(
-                          pickerColor: selectedColor ?? pickedColor!,
-                          onColorChanged: changeColor,
-                          availableColors: colors,
-                          layoutBuilder: pickerLayoutBuilder,
-                          itemBuilder: pickerItemBuilder,
-                        ),
-                      ),
+            Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10),
+                            child: Text('가까운 색을 골라보세요'),
+                          ),
+                          content: SingleChildScrollView(
+                            child: BlockPicker(
+                              pickerColor: selectedColor ?? pickedColor,
+                              onColorChanged: changeColor,
+                              availableColors: colors,
+                              layoutBuilder: pickerLayoutBuilder,
+                              itemBuilder: pickerItemBuilder,
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: selectedColor ?? pickedColor!,
-                shadowColor: selectedColor ?? pickedColor!,
-                elevation: 10,
-              ),
-              child: Text(
-                '색상을 맞춰보세요',
-                style: TextStyle(
-                    color: (selectedColor?.computeLuminance() ??
-                                pickedColor!.computeLuminance()) >
-                            0.5
-                        ? Colors.black
-                        : Colors.white),
-              ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: selectedColor ?? pickedColor,
+                    shadowColor: selectedColor ?? pickedColor,
+                    elevation: 10,
+                  ),
+                  child: Text(
+                    '색상을 맞춰보세요',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: (selectedColor?.computeLuminance() ??
+                                    pickedColor.computeLuminance()) >
+                                0.5
+                            ? Colors.black
+                            : Colors.white),
+                  ),
+                ),
+                Container(
+                  height: 10,
+                  decoration: const BoxDecoration(
+                    color: ui.Color.fromARGB(255, 195, 51, 51),
+                  ),
+                ),
+              ],
             ),
           ],
-        )
+        ),
+        const SizedBox(
+          height: 20,
+        ),
       ],
     );
   }

@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: const BtmNavBar(),
-        appBar: AppBar(title: const Text('Home Page')),
         body: SingleChildScrollView(
           child: Center(
             child: Column(
@@ -37,6 +36,9 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    height: widget.deviceheight(context) * 0.05,
+                  ),
                   ImageSelect(setImage: setImage),
                   widget.previewImage == null
                       ? Container()
