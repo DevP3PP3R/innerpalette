@@ -106,9 +106,9 @@ class _ImageColorsState extends State<ImageColors> {
 
     if (imageSize != null) {
       newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
-      if (newRegion.size.width < 1 || newRegion.size.height < 1) {
-        newRegion = null;
-      }
+      // if (newRegion.size.width < 1 || newRegion.size.height < 1) {
+      //   newRegion = null;
+      // }
     }
 
     await _updatePaletteGenerator(newRegion);
@@ -187,7 +187,8 @@ class _ImageColorsState extends State<ImageColors> {
             ]),
           ),
         ),
-        SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
+        if (paletteGenerator != null)
+          SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
       ],
     );
   }
