@@ -48,7 +48,6 @@ class _ImageSelectState extends State<ImageSelect> {
     double deviceWidth = MediaQuery.of(context).size.width;
     return SizedBox(
       width: deviceWidth * 0.8,
-      height: deviceWidth * 1.2,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

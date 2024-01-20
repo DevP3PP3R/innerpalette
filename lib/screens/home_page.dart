@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: const BtmNavBar(),

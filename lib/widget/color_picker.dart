@@ -106,9 +106,6 @@ class _ImageColorsState extends State<ImageColors> {
 
     if (imageSize != null) {
       newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
-      // if (newRegion.size.width < 1 || newRegion.size.height < 1) {
-      //   newRegion = null;
-      // }
     }
 
     await _updatePaletteGenerator(newRegion);
@@ -148,7 +145,7 @@ class _ImageColorsState extends State<ImageColors> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15),
           child: GestureDetector(
             onTapDown: _onTapDown,
             onPanDown: _onPanDown,
