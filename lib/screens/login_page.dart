@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innerpalette/screens/email_login.dart';
 import 'package:innerpalette/screens/home_page.dart';
 
 class LoginPage extends StatelessWidget {
@@ -21,8 +22,10 @@ class LoginPage extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const HomePage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const EmailLogin()));
               },
               child: const Text('이메일로그인'),
             ),
