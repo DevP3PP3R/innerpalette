@@ -39,11 +39,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   ImageSelect(setImage: setImage),
                   widget.previewImage == null
-                      // ? Container()
-                      ? const ColorPicker(
-                          // TODO : 지우고 Container()로 바꿔놓기
-                          previewImage: AssetImage('assets/magic.png'),
-                        )
+                      ? Container()
                       : Center(
                           child: ColorPicker(
                               previewImage: FileImage(widget.previewImage!)),
