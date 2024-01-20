@@ -54,7 +54,10 @@ class _ImageColorsState extends State<ImageColors> {
   void initState() {
     super.initState();
     if (widget.imageSize != null) {
-      region = Offset.zero & widget.imageSize!;
+      double imgWidth = widget.imageSize!.width * 0.7;
+      double imgHeight = widget.imageSize!.height * 0.7;
+      region = Offset(imgWidth / 2, imgHeight / 2) &
+          Size(widget.imageSize!.width / 5, widget.imageSize!.height / 5);
     }
     _updatePaletteGenerator(region);
   }
@@ -155,6 +158,7 @@ class _ImageColorsState extends State<ImageColors> {
             child: Stack(children: [
               Container(
                 key: imageKey,
+                // 이미지 크기
                 width: deviceWidth * 0.8,
                 height: deviceWidth * 0.8,
                 decoration: BoxDecoration(
