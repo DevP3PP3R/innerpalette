@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-class ImageUpload extends StatefulWidget {
-  const ImageUpload({
+import 'package:innerpalette/widget/color_picker.dart';
+
+class ImageSelect extends StatefulWidget {
+  const ImageSelect({
     super.key,
     required this.setImage,
   });
   final Function setImage;
   @override
-  State<ImageUpload> createState() => _ImageUploadState();
+  State<ImageSelect> createState() => _ImageSelectState();
 }
 
-class _ImageUploadState extends State<ImageUpload> {
+class _ImageSelectState extends State<ImageSelect> {
   final picker = ImagePicker();
   File? previewImage;
+  int quality = 15;
 
   imageFromGallery() async {
     var image = await picker.pickImage(
       source: ImageSource.gallery,
-      imageQuality: 30,
+      imageQuality: quality,
     );
     if (image != null) {
       setState(() {
@@ -31,7 +34,7 @@ class _ImageUploadState extends State<ImageUpload> {
   imageFromCamera() async {
     var image = await picker.pickImage(
       source: ImageSource.camera,
-      imageQuality: 30,
+      imageQuality: quality,
     );
     if (image != null) {
       setState(() {
@@ -42,18 +45,13 @@ class _ImageUploadState extends State<ImageUpload> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    double deviceWidth = MediaQuery.of(context).size.width;
+    return SizedBox(
+      width: deviceWidth * 0.8,
+      height: deviceWidth * 1.2,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            child: (previewImage != null)
-                ? Image.file(
-                    previewImage!,
-                    width: 200,
-                  )
-                : const Text('이미지를 선택해주세요'),
-          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -67,26 +65,11 @@ class _ImageUploadState extends State<ImageUpload> {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () {
-                  if (previewImage != null) {
-                    widget.setImage(previewImage);
-                  }
-                  Navigator.of(context).pop(true);
-                },
-                icon: const Icon(Icons.check),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.close),
-              ),
-            ],
-          )
+          Container(
+            child: (previewImage != null)
+                ? ColorPicker(previewImage: FileImage(previewImage!))
+                : const Text('이미지를 선택해주세요'),
+          ),
         ],
       ),
     );

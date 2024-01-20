@@ -7,31 +7,32 @@ import 'package:palette_generator/palette_generator.dart';
 const Color _kSelectionRectangleBackground = Color(0x15000000);
 const Color _kSelectionRectangleBorder = Color(0x80000000);
 
-/// The main Application class.
 class ColorPicker extends StatelessWidget {
-  /// Creates the main Application class.
-  const ColorPicker({super.key});
+  const ColorPicker({
+    super.key,
+    required this.previewImage,
+  });
+  final ImageProvider previewImage;
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const ImageColors(
-      image: AssetImage('assets/magic.png'),
-      imageSize: Size(256.0, 170.0),
+    double deviceWidth = MediaQuery.of(context).size.width;
+    return ImageColors(
+      previewImage: previewImage,
+      imageSize: Size(deviceWidth * 0.8, deviceWidth * 0.8),
     );
   }
 }
 
 @immutable
 class ImageColors extends StatefulWidget {
-  /// Creates the home page.
   const ImageColors({
     super.key,
-    required this.image,
+    required this.previewImage,
     this.imageSize,
   });
 
-  final ImageProvider image;
+  final ImageProvider previewImage;
   final Size? imageSize;
 
   @override
@@ -59,8 +60,11 @@ class _ImageColorsState extends State<ImageColors> {
   }
 
   Future<void> _updatePaletteGenerator(Rect? newRegion) async {
+    if (newRegion == null) {
+      return;
+    }
     paletteGenerator = await PaletteGenerator.fromImageProvider(
-      widget.image,
+      widget.previewImage,
       size: widget.imageSize,
       region: newRegion,
       maximumColorCount: 20,
@@ -99,9 +103,9 @@ class _ImageColorsState extends State<ImageColors> {
 
     if (imageSize != null) {
       newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
-      // if (newRegion.size.width < 4 || newRegion.size.height < 4) {
-      //   newRegion = null;
-      // }
+      if (newRegion.size.width < 1 || newRegion.size.height < 1) {
+        newRegion = null;
+      }
     }
 
     await _updatePaletteGenerator(newRegion);
@@ -121,9 +125,8 @@ class _ImageColorsState extends State<ImageColors> {
       center: localPosition,
       radius: 3.0,
     );
-
     paletteGenerator = await PaletteGenerator.fromImageProvider(
-      widget.image,
+      widget.previewImage,
       size: widget.imageSize,
       region: newRegion,
       maximumColorCount: 20,
@@ -132,15 +135,15 @@ class _ImageColorsState extends State<ImageColors> {
     await _updatePaletteGenerator(newRegion);
     setState(() {
       region = newRegion;
-      // dragRegion = null;
-      // startDrag = null;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width;
+
     return Column(
-      children: <Widget>[
+      children: [
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: GestureDetector(
@@ -149,14 +152,19 @@ class _ImageColorsState extends State<ImageColors> {
             onPanUpdate: _onPanUpdate,
             onPanCancel: _onPanCancel,
             onPanEnd: _onPanEnd,
-            child: Stack(children: <Widget>[
-              Image(
+            child: Stack(children: [
+              Container(
                 key: imageKey,
-                image: widget.image,
-                width: widget.imageSize?.width,
-                height: widget.imageSize?.height,
+                width: deviceWidth * 0.8,
+                height: deviceWidth * 0.8,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade300,
+                  image: DecorationImage(
+                    image: widget.previewImage,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              // This is the selection circle.
               if (dragRegion != null || region != null)
                 Positioned(
                     left: (dragRegion ?? region!).left,
