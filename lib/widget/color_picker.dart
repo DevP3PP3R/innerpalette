@@ -2,6 +2,10 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
+import 'block_picker.dart';
+import 'picker_widgets.dart';
 
 class ColorPicker extends StatelessWidget {
   const ColorPicker({
@@ -36,8 +40,15 @@ class ImageColors extends StatefulWidget {
 }
 
 class _ImageColorsState extends State<ImageColors> {
-  Color? pickedColor;
+  Color? pickedColor = Colors.blue[600];
+  Color? selectedColor;
   final GlobalKey imageKey = GlobalKey();
+
+  void colorChange(Color color) {
+    setState(() {
+      selectedColor = color;
+    });
+  }
 
   void _onTapDown(TapDownDetails details) async {
     final RenderBox box = context.findRenderObject() as RenderBox;
@@ -109,6 +120,41 @@ class _ImageColorsState extends State<ImageColors> {
               height: deviceWidth * 0.3,
               decoration: BoxDecoration(
                 color: pickedColor ?? const Color.fromARGB(255, 182, 180, 180),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('가까운 색을 골라보세요'),
+                      content: SingleChildScrollView(
+                        child: BlockPicker(
+                          pickerColor: selectedColor ?? pickedColor!,
+                          onColorChanged: colorChange,
+                          availableColors: colors,
+                          layoutBuilder: pickerLayoutBuilder,
+                          itemBuilder: pickerItemBuilder,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: pickedColor!,
+                shadowColor: pickedColor!,
+                elevation: 10,
+              ),
+              child: Text(
+                '색상을 맞춰보세요',
+                style: TextStyle(
+                    color: (selectedColor?.computeLuminance() ??
+                                pickedColor!.computeLuminance()) >
+                            0.5
+                        ? Colors.black
+                        : Colors.white),
               ),
             ),
           ],

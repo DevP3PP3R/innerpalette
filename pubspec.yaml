@@ -17,6 +17,7 @@ dependencies:
   firebase_in_app_messaging: ^0.7.4+8
   image_picker: ^1.0.7
   flex_color_picker: ^3.3.0
+  flutter_colorpicker: ^1.0.3
 
 dev_dependencies:
   flutter_test:
