@@ -151,14 +151,11 @@ class _ImageColorsState extends State<ImageColors> {
       maximumColorCount: 20,
     );
 
-    // setState(() {
-    //   dragRegion = newRegion;
-    // });
     await _updatePaletteGenerator(newRegion);
     setState(() {
       region = newRegion;
-      dragRegion = null;
-      startDrag = null;
+      // dragRegion = null;
+      // startDrag = null;
     });
   }
 
