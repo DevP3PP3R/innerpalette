@@ -75,47 +75,6 @@ class _ImageColorsState extends State<ImageColors> {
     setState(() {});
   }
 
-  void _onPanDown(DragDownDetails details) {
-    final RenderBox box =
-        imageKey.currentContext!.findRenderObject()! as RenderBox;
-    final Offset localPosition = box.globalToLocal(details.globalPosition);
-    setState(() {
-      startDrag = localPosition;
-      currentDrag = localPosition;
-      dragRegion = Rect.fromPoints(localPosition, localPosition);
-    });
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    setState(() {
-      currentDrag = currentDrag! + details.delta;
-      dragRegion = Rect.fromPoints(startDrag!, currentDrag!);
-    });
-  }
-
-  void _onPanCancel() {
-    setState(() {
-      dragRegion = null;
-      startDrag = null;
-    });
-  }
-
-  Future<void> _onPanEnd(DragEndDetails details) async {
-    final Size? imageSize = imageKey.currentContext?.size;
-    Rect? newRegion;
-
-    if (imageSize != null) {
-      newRegion = (Offset.zero & imageSize).intersect(dragRegion!);
-    }
-
-    await _updatePaletteGenerator(newRegion);
-    setState(() {
-      region = newRegion;
-      dragRegion = null;
-      startDrag = null;
-    });
-  }
-
   void _onTapDown(TapDownDetails details) async {
     final RenderBox box =
         imageKey.currentContext!.findRenderObject()! as RenderBox;
@@ -142,10 +101,6 @@ class _ImageColorsState extends State<ImageColors> {
           padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15),
           child: GestureDetector(
             onTapDown: _onTapDown,
-            onPanDown: _onPanDown,
-            onPanUpdate: _onPanUpdate,
-            onPanCancel: _onPanCancel,
-            onPanEnd: _onPanEnd,
             child: Stack(children: [
               Container(
                 key: imageKey,
@@ -160,21 +115,6 @@ class _ImageColorsState extends State<ImageColors> {
                   ),
                 ),
               ),
-              if (dragRegion != null || region != null)
-                Positioned(
-                    left: (dragRegion ?? region!).left,
-                    top: (dragRegion ?? region!).top,
-                    width: (dragRegion ?? region!).width,
-                    height: (dragRegion ?? region!).height,
-                    child: Container(
-                      decoration: const ShapeDecoration(
-                          color: _kSelectionRectangleBackground,
-                          shape: CircleBorder(
-                            side: BorderSide(
-                              color: _kSelectionRectangleBorder,
-                            ),
-                          )),
-                    )),
             ]),
           ),
         ),
