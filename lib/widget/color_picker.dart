@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:innerpalette/widget/single_color.dart';
+
 import 'package:palette_generator/palette_generator.dart';
 
 const Color _kSelectionRectangleBackground = Color(0x15000000);
@@ -70,7 +70,7 @@ class _ImageColorsState extends State<ImageColors> {
       widget.previewImage,
       size: widget.imageSize,
       region: newRegion,
-      maximumColorCount: 20,
+      maximumColorCount: 1,
     );
     setState(() {});
   }
@@ -124,12 +124,6 @@ class _ImageColorsState extends State<ImageColors> {
     final Rect newRegion = Rect.fromCircle(
       center: localPosition,
       radius: 3.0,
-    );
-    paletteGenerator = await PaletteGenerator.fromImageProvider(
-      widget.previewImage,
-      size: widget.imageSize,
-      region: newRegion,
-      maximumColorCount: 20,
     );
 
     await _updatePaletteGenerator(newRegion);
