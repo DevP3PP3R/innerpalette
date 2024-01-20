@@ -101,12 +101,17 @@ class _ImageColorsState extends State<ImageColors> {
             ),
           ),
         ),
-        Container(
-          width: deviceWidth * 0.3,
-          height: deviceWidth * 0.3,
-          decoration: BoxDecoration(
-            color: pickedColor ?? const Color.fromARGB(255, 182, 180, 180),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              width: deviceWidth * 0.3,
+              height: deviceWidth * 0.3,
+              decoration: BoxDecoration(
+                color: pickedColor ?? const Color.fromARGB(255, 182, 180, 180),
+              ),
+            ),
+          ],
         )
       ],
     );
