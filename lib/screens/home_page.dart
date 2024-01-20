@@ -7,6 +7,7 @@ import 'package:innerpalette/widget/image_upload.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
+  final picker = ImagePicker();
   File? previewImage;
   deviceheight(BuildContext context) => MediaQuery.of(context).size.height;
 
@@ -23,6 +24,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  imageFromCamera() async {
+    var image = await widget.picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 30,
+    );
+    if (image != null) {
+      setState(() {
+        widget.previewImage = File(image.path);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,14 +47,10 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ElevatedButton(
-                  onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ImageUpload(
-                                setImage: setImage,
-                              ))),
-                  child: const Text('이미지업로드')),
+              IconButton(
+                onPressed: imageFromCamera,
+                icon: const Icon(Icons.camera_alt_rounded),
+              ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
