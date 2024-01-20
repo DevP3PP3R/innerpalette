@@ -88,6 +88,11 @@ class _ImageColorsState extends State<ImageColors> {
     return completer.future;
   }
 
+  void changeColor(Color color) {
+    setState(() => selectedColor = color);
+    Navigator.of(context, rootNavigator: true).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
@@ -132,7 +137,7 @@ class _ImageColorsState extends State<ImageColors> {
                       content: SingleChildScrollView(
                         child: BlockPicker(
                           pickerColor: selectedColor ?? pickedColor!,
-                          onColorChanged: colorChange,
+                          onColorChanged: changeColor,
                           availableColors: colors,
                           layoutBuilder: pickerLayoutBuilder,
                           itemBuilder: pickerItemBuilder,
@@ -143,8 +148,8 @@ class _ImageColorsState extends State<ImageColors> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: pickedColor!,
-                shadowColor: pickedColor!,
+                backgroundColor: selectedColor ?? pickedColor!,
+                shadowColor: selectedColor ?? pickedColor!,
                 elevation: 10,
               ),
               child: Text(
