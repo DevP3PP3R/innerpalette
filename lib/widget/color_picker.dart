@@ -184,8 +184,14 @@ class _ImageColorsState extends State<ImageColors> {
             ]),
           ),
         ),
-        if (paletteGenerator != null)
-          SingleColorDisplay(color: paletteGenerator?.dominantColor?.color),
+        Container(
+          width: deviceWidth * 0.3,
+          height: deviceWidth * 0.3,
+          decoration: BoxDecoration(
+            color: paletteGenerator?.dominantColor?.color ??
+                const Color.fromARGB(255, 182, 180, 180),
+          ),
+        )
       ],
     );
   }
