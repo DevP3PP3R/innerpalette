@@ -19,68 +19,69 @@ class ButtonRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // 고른 색상 표시
-        Container(
-          width: deviceWidth * 0.3,
-          height: deviceWidth * 0.3,
-          decoration: BoxDecoration(
-            color: pickedColor ?? Colors.green[700],
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            // 고른 색상 표시
+            width: deviceWidth * 0.3,
+            height: deviceWidth * 0.3,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(deviceWidth * 0.15),
+              color: pickedColor ?? Colors.green[700],
+            ),
           ),
-        ),
-        const SizedBox(
-          width: 30,
-        ),
-        // 색상 고르기 버튼
-        ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('가까운 색을 골라보세요'),
-                  ),
-                  content: SingleChildScrollView(
-                    child: MaterialPicker(
-                        pickerColor: selectedColor ??
-                            pickedColor ??
-                            Color(Colors.green[700]!.value),
-                        onColorChanged: (selectedColor) {
-                          colorProvider.setSelectedColor(selectedColor);
+          const SizedBox(
+            width: 30,
+          ),
+          // 색상 고르기 버튼
+          ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10),
+                      child: Text('가까운 색을 골라보세요'),
+                    ),
+                    content: SingleChildScrollView(
+                      child: MaterialPicker(
+                        pickerColor:
+                            selectedColor ?? Color(Colors.green[700]!.value),
+                        onColorChanged: (c) {
+                          colorProvider.setSelectedColor(c);
                           Navigator.of(context, rootNavigator: true).pop();
                         },
                         enableLabel: false,
                         portraitOnly: true,
-                        onPrimaryChanged: (pickedColor) {
-                          colorProvider.setSelectedColor(pickedColor);
-                        }),
-                  ),
-                );
-              },
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: selectedColor ?? pickedColor,
-            shadowColor: selectedColor ?? pickedColor,
-            elevation: 10,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: selectedColor ?? pickedColor,
+              shadowColor: selectedColor ?? pickedColor,
+              elevation: 10,
+            ),
+            child: Text(
+              '색상을 맞춰보세요',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: (selectedColor?.computeLuminance() ??
+                              pickedColor?.computeLuminance() ??
+                              Colors.green.computeLuminance()) >
+                          0.5
+                      ? Colors.black
+                      : Colors.white),
+            ),
           ),
-          child: Text(
-            '색상을 맞춰보세요',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: (selectedColor?.computeLuminance() ??
-                            pickedColor?.computeLuminance() ??
-                            Colors.white.computeLuminance()) >
-                        0.5
-                    ? Colors.black
-                    : Colors.white),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -20,8 +20,8 @@ class SelectPage extends StatelessWidget {
     double deviceWidth = MediaQuery.of(context).size.width;
     return Column(
       children: [
-        MainColor(deviceWidth: deviceWidth, color: selectedColor),
-        selectedColor != null
+        MainColor(deviceWidth: deviceWidth, color: pickedColor),
+        pickedColor != null
             ? ButtonRow(
                 deviceWidth: deviceWidth,
                 pickedColor: pickedColor,

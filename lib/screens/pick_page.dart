@@ -21,19 +21,21 @@ class PickPage extends StatelessWidget {
         ? File(imgProvider.previewImage!)
         : null;
     double deviceWidth = MediaQuery.of(context).size.width;
-    return Column(
-      children: [
-        MainImage(
-          deviceWidth: deviceWidth,
-          image: image,
-        ),
-        ButtonRow(
-          deviceWidth: deviceWidth,
-          pickedColor: pickedColor,
-          selectedColor: selectedColor,
-          colorProvider: colorProvider,
-        )
-      ],
-    );
+    return image == null
+        ? Container()
+        : Column(
+            children: [
+              MainImage(
+                deviceWidth: deviceWidth,
+                image: image,
+              ),
+              ButtonRow(
+                deviceWidth: deviceWidth,
+                pickedColor: pickedColor,
+                selectedColor: selectedColor,
+                colorProvider: colorProvider,
+              )
+            ],
+          );
   }
 }

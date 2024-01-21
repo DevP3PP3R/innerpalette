@@ -1,7 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:innerpalette/provider/color_provider.dart';
+import 'package:provider/provider.dart';
 
+// ignore: must_be_immutable
 class MainColor extends StatelessWidget {
   MainColor({
     super.key,
@@ -10,13 +11,16 @@ class MainColor extends StatelessWidget {
   });
 
   final double deviceWidth;
+
   Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final colorProvider = Provider.of<ColorProvider>(context);
+    Color? pickedColor = colorProvider.pickedColor;
     return Container(
         width: deviceWidth * 0.8,
         height: deviceWidth * 0.8,
-        decoration: BoxDecoration(color: color));
+        decoration: BoxDecoration(color: pickedColor ?? Colors.green[700]));
   }
 }
