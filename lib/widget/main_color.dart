@@ -19,8 +19,11 @@ class MainColor extends StatelessWidget {
     final colorProvider = Provider.of<ColorProvider>(context);
     Color? pickedColor = colorProvider.pickedColor;
     return Container(
-        width: deviceWidth * 0.8,
-        height: deviceWidth * 0.8,
-        decoration: BoxDecoration(color: pickedColor ?? Colors.green[700]));
+      width: deviceWidth * 0.8,
+      height: deviceWidth * 0.5,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(deviceWidth * 0.05),
+          color: pickedColor ?? Colors.green[700]),
+    );
   }
 }

@@ -21,6 +21,7 @@ class BtmNavBar extends StatelessWidget {
         ),
       ],
       onDestinationSelected: (int index) {
+        if (index == 0) {}
         if (index == 2) {
           Navigator.push(
             context,

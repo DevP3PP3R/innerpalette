@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
+import '../pickers/hsv_picker.dart';
+import '../provider/color_provider.dart';
 import '../provider/img_provider.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -14,6 +17,9 @@ class SettingsPage extends StatelessWidget {
     File? previewImage = (imgProvider.previewImage != null)
         ? File(imgProvider.previewImage!)
         : null;
+
+    final colorProvider = Provider.of<ColorProvider>(context);
+    Color? selectedColor = colorProvider.selectedColor;
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(

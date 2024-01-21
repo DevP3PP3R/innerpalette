@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:innerpalette/provider/color_provider.dart';
+import 'package:provider/provider.dart';
 
 class ButtonRow extends StatelessWidget {
   const ButtonRow({
@@ -42,10 +43,16 @@ class ButtonRow extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
+                  final colorProvider =
+                      Provider.of<ColorProvider>(context, listen: false);
+                  Color? selectedColor = colorProvider.selectedColor;
+
                   return AlertDialog(
                     title: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Text('가까운 색을 골라보세요'),
+                      child: Text(
+                        '가까운 색을 골라보세요',
+                      ),
                     ),
                     content: SingleChildScrollView(
                       child: MaterialPicker(
@@ -64,8 +71,8 @@ class ButtonRow extends StatelessWidget {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: selectedColor ?? pickedColor,
-              shadowColor: selectedColor ?? pickedColor,
+              backgroundColor: pickedColor,
+              shadowColor: pickedColor,
               elevation: 10,
             ),
             child: Text(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 import 'package:provider/provider.dart';
 
+import '../pickers/hsv_picker.dart';
 import '../provider/color_provider.dart';
 import '../provider/img_provider.dart';
 
@@ -46,6 +48,7 @@ class ImageSelect extends StatelessWidget {
     final imgProvider = Provider.of<ImgProvider>(context);
     final colorProvider = Provider.of<ColorProvider>(context);
     final selectedColor = colorProvider.selectedColor;
+    final pickedColor = colorProvider.pickedColor;
     File? previewImage = imgProvider.previewImage != null
         ? File(imgProvider.previewImage!)
         : null;
@@ -58,13 +61,13 @@ class ImageSelect extends StatelessWidget {
           Padding(
             padding:
                 EdgeInsets.symmetric(vertical: (previewImage == null) ? 20 : 0),
-            child: Column(
-              children: [
-                Text(
-                    (previewImage == null) ? '사진을 선택하세요' : '사진을 터치해서\n색상을 고르세요',
-                    style: const TextStyle(fontSize: 27)),
-              ],
-            ),
+            child: Text(
+                (selectedColor != null)
+                    ? '사진의 색상과\n비슷하게 만들어보세요'
+                    : (previewImage == null)
+                        ? '사진을 선택하세요'
+                        : '사진을 터치해서\n색상을 고르세요',
+                style: const TextStyle(fontSize: 27)),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -76,8 +79,8 @@ class ImageSelect extends StatelessWidget {
                   size: (previewImage == null) ? 50 : 25,
                 ),
               ),
-              const SizedBox(
-                width: 30,
+              SizedBox(
+                width: (previewImage == null) ? 30 : 15,
               ),
               IconButton(
                   onPressed: () => imageFromGallery(context),
@@ -87,6 +90,21 @@ class ImageSelect extends StatelessWidget {
                   )),
             ],
           ),
+          (previewImage == null || pickedColor == null || selectedColor == null)
+              ? Container()
+              : SlidePicker(
+                  indicatorSize: Size(deviceWidth * 0.8, 130),
+                  sliderSize: Size(deviceWidth * 0.8, 30),
+                  pickerColor: selectedColor ?? Color(Colors.green[700]!.value),
+                  onColorChanged: colorProvider.setSelectedColor,
+                  colorModel: ColorModel.rgb,
+                  enableAlpha: false,
+                  displayThumbColor: true,
+                  showParams: false,
+                  showIndicator: true,
+                  indicatorBorderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(25)),
+                ),
         ],
       ),
     );
