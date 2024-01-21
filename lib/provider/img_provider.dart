@@ -9,4 +9,9 @@ class ImgProvider extends ChangeNotifier {
     _previewImage = imagePath;
     notifyListeners();
   }
+
+  void clearPreviewImage() {
+    _previewImage = null;
+    notifyListeners();
+  }
 }

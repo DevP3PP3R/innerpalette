@@ -16,4 +16,14 @@ class ColorProvider extends ChangeNotifier {
     _selectedColor = color;
     notifyListeners();
   }
+
+  void clearSelectedColor() {
+    _selectedColor = null;
+    notifyListeners();
+  }
+
+  void clearPickedColor() {
+    _pickedColor = null;
+    notifyListeners();
+  }
 }

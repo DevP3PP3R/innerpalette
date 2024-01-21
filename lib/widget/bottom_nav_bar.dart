@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../provider/color_provider.dart';
+import '../provider/img_provider.dart';
 import '../screens/setting_page.dart';
 
 class BtmNavBar extends StatelessWidget {
@@ -7,6 +10,15 @@ class BtmNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorProvider = Provider.of<ColorProvider>(context);
+    final imgProvider = Provider.of<ImgProvider>(context);
+
+    void clearAllProvider() {
+      colorProvider.clearPickedColor();
+      colorProvider.clearSelectedColor();
+      imgProvider.clearPreviewImage();
+    }
+
     return NavigationBar(
       destinations: const [
         NavigationDestination(
@@ -21,7 +33,9 @@ class BtmNavBar extends StatelessWidget {
         ),
       ],
       onDestinationSelected: (int index) {
-        if (index == 0) {}
+        if (index == 1) {
+          clearAllProvider();
+        }
         if (index == 2) {
           Navigator.push(
             context,
