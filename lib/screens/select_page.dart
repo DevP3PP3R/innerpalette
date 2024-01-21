@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:innerpalette/provider/img_provider.dart';
+
 import 'package:innerpalette/widget/button_row.dart';
 import 'package:innerpalette/widget/main_color.dart';
-import 'package:innerpalette/widget/main_image.dart';
+
 import 'package:provider/provider.dart';
 
 import '../provider/color_provider.dart';

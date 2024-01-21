@@ -74,7 +74,7 @@ class ButtonRow extends StatelessWidget {
               style: TextStyle(
                   color: (selectedColor?.computeLuminance() ??
                               pickedColor?.computeLuminance() ??
-                              Colors.green.computeLuminance()) >
+                              Colors.white.computeLuminance()) >
                           0.5
                       ? Colors.black
                       : Colors.white),
