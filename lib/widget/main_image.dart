@@ -22,7 +22,7 @@ class MainImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorProvider = Provider.of<ColorProvider>(context, listen: true);
+    final colorProvider = Provider.of<ColorProvider>(context, listen: false);
     final pickedColor = colorProvider.pickedColor;
     Future<ui.Image> loadImage(ImageProvider provider) async {
       final Completer<ui.Image> completer = Completer<ui.Image>();
@@ -36,9 +36,9 @@ class MainImage extends StatelessWidget {
     void onTapDown(TapDownDetails details) async {
       final RenderBox box = context.findRenderObject() as RenderBox;
       final Offset localPosition =
-          box.globalToLocal(details.globalPosition) + const Offset(10, 90);
+          box.globalToLocal(details.globalPosition) + const Offset(0, 30);
 
-      final imgProvider = Provider.of<ImgProvider>(context, listen: true);
+      final imgProvider = Provider.of<ImgProvider>(context, listen: false);
       File? previewImage = imgProvider.previewImage != null
           ? File(imgProvider.previewImage!)
           : null;
