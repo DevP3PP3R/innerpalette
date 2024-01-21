@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../screens/setting_page.dart';
+
 class BtmNavBar extends StatelessWidget {
   const BtmNavBar({super.key});
 
@@ -18,6 +20,14 @@ class BtmNavBar extends StatelessWidget {
           label: 'Settings',
         ),
       ],
+      onDestinationSelected: (int index) {
+        if (index == 2) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsPage()),
+          );
+        }
+      },
     );
   }
 }

@@ -1,120 +1,131 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:innerpalette/provider/img_provider.dart';
+import 'package:provider/provider.dart';
+import '../provider/color_provider.dart';
 
-// ignore: must_be_immutable
 class ColorPicker extends StatelessWidget {
-  ColorPicker({
+  const ColorPicker({
     Key? key,
-    required this.previewImage,
-    this.selectedColor,
   }) : super(key: key);
-
-  final ImageProvider previewImage;
-  Color? selectedColor;
 
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-    return ImageColors(
-      previewImage: previewImage,
-      imageSize: Size(deviceWidth * 0.8, deviceWidth * 0.8),
-    );
+    final colorProvider = Provider.of<ColorProvider>(context);
+    final imgProvider = Provider.of<ImgProvider>(context);
+    final selectedColor = colorProvider.selectedColor;
+    File? previewImage = (imgProvider.previewImage != null)
+        ? File(imgProvider.previewImage!)
+        : null;
+
+    return previewImage != null
+        ? ImageColors(
+            imageSize: Size(deviceWidth * 0.8, deviceWidth * 0.8),
+          )
+        : (selectedColor != null)
+            ? Container(
+                width: deviceWidth * 0.8,
+                height: deviceWidth * 0.8,
+                decoration: BoxDecoration(
+                  color: selectedColor,
+                ),
+              )
+            : Container();
   }
 }
 
-class ImageColors extends StatefulWidget {
-  ImageColors({
+class ImageColors extends StatelessWidget {
+  const ImageColors({
     Key? key,
-    required this.previewImage,
     this.imageSize,
-    this.selectedColor,
   }) : super(key: key);
 
-  final ImageProvider previewImage;
   final Size? imageSize;
-  Color? selectedColor;
-
-  @override
-  _ImageColorsState createState() => _ImageColorsState();
-}
-
-class _ImageColorsState extends State<ImageColors> {
-  Color pickedColor = const ui.Color.fromARGB(255, 20, 92, 150);
-
-  final GlobalKey imageKey = GlobalKey();
-
-  void colorChange(Color color) {
-    setState(() {
-      widget.selectedColor = color;
-    });
-  }
-
-  void _onTapDown(TapDownDetails details) async {
-    final RenderBox box = context.findRenderObject() as RenderBox;
-    final Offset localPosition =
-        box.globalToLocal(details.globalPosition) + const Offset(10, 90);
-    print(localPosition.dy);
-    final ui.Image image = await _loadImage(widget.previewImage);
-    final double scaleX = image.width / box.size.width;
-    final double scaleY = image.height / box.size.height;
-
-    final int x = (localPosition.dx * scaleX).round();
-    final int y = (localPosition.dy * scaleY).round();
-
-    final ByteData? byteData =
-        await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-    final Uint8List uint8list = byteData!.buffer.asUint8List();
-
-    final int offset = ((y * image.width) + x) * 4;
-    final int r = uint8list[offset];
-    final int g = uint8list[offset + 1];
-    final int b = uint8list[offset + 2];
-    final int a = uint8list[offset + 3];
-
-    final Color color = Color.fromARGB(a, r, g, b);
-
-    setState(() {
-      pickedColor = color;
-    });
-  }
-
-  Future<ui.Image> _loadImage(ImageProvider provider) async {
-    final Completer<ui.Image> completer = Completer<ui.Image>();
-    final ImageStream stream = provider.resolve(ImageConfiguration.empty);
-    final listener = ImageStreamListener(
-        (ImageInfo info, bool _) => completer.complete(info.image));
-    stream.addListener(listener);
-    return completer.future;
-  }
-
-  void changeColor(Color color) {
-    setState(() => widget.selectedColor = color);
-    Navigator.of(context, rootNavigator: true).pop();
-  }
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey imageKey = GlobalKey();
+
+    Future<ui.Image> loadImage(ImageProvider provider) async {
+      final Completer<ui.Image> completer = Completer<ui.Image>();
+      final ImageStream stream = provider.resolve(ImageConfiguration.empty);
+      final listener = ImageStreamListener(
+          (ImageInfo info, bool _) => completer.complete(info.image));
+      stream.addListener(listener);
+      return completer.future;
+    }
+
+    void onTapDown(TapDownDetails details) async {
+      final RenderBox box = context.findRenderObject() as RenderBox;
+      final Offset localPosition =
+          box.globalToLocal(details.globalPosition) + const Offset(10, 90);
+
+      final imgProvider = Provider.of<ImgProvider>(context, listen: true);
+      File? previewImage = imgProvider.previewImage != null
+          ? File(imgProvider.previewImage!)
+          : null;
+      final ui.Image image = await loadImage(FileImage(previewImage!));
+      final double scaleX = image.width / box.size.width;
+      final double scaleY = image.height / box.size.height;
+
+      final int x = (localPosition.dx * scaleX).round();
+      final int y = (localPosition.dy * scaleY).round();
+
+      final ByteData? byteData =
+          await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      final Uint8List uint8list = byteData!.buffer.asUint8List();
+
+      final int offset = ((y * image.width) + x) * 4;
+      final int r = uint8list[offset];
+      final int g = uint8list[offset + 1];
+      final int b = uint8list[offset + 2];
+      final int a = uint8list[offset + 3];
+
+      Color color = Color.fromARGB(a, r, g, b);
+
+      Provider.of<ColorProvider>(context, listen: true).setPickedColor(color);
+    }
+
+    void changeColor(Color color) {
+      Provider.of<ColorProvider>(context, listen: true).setSelectedColor(color);
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+
+    void changeSlide(Color color) {
+      Provider.of<ColorProvider>(context, listen: true).setSelectedColor(color);
+    }
+
     double deviceWidth = MediaQuery.of(context).size.width;
+    final colorProvider = Provider.of<ColorProvider>(context);
+    final selectedColor = colorProvider.selectedColor;
+    final pickedColor = colorProvider.pickedColor;
+    final ImgProvider imgProvider = Provider.of<ImgProvider>(context);
+    File? previewImage = (imgProvider.previewImage != null)
+        ? File(imgProvider.previewImage!)
+        : null;
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15),
           child: GestureDetector(
-            onTapDown: _onTapDown,
+            onTapDown: onTapDown,
             child: Container(
               key: imageKey,
               width: deviceWidth * 0.8,
               height: deviceWidth * 0.8,
               decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                image: DecorationImage(
-                  image: widget.previewImage,
-                  fit: BoxFit.cover,
-                ),
+                image: previewImage != null
+                    ? DecorationImage(
+                        image: FileImage(previewImage),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
               ),
             ),
           ),
@@ -122,7 +133,7 @@ class _ImageColorsState extends State<ImageColors> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            widget.selectedColor == null
+            (selectedColor == null)
                 ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -148,9 +159,9 @@ class _ImageColorsState extends State<ImageColors> {
                                 ),
                                 content: SingleChildScrollView(
                                   child: MaterialPicker(
-                                    pickerColor:
-                                        widget.selectedColor ?? pickedColor,
-                                    onColorChanged: changeColor,
+                                    pickerColor: selectedColor ?? pickedColor,
+                                    onColorChanged:
+                                        colorProvider.setSelectedColor,
                                     enableLabel: false,
                                     portraitOnly: true,
                                     onPrimaryChanged: (pickedColor) => {},
@@ -161,28 +172,27 @@ class _ImageColorsState extends State<ImageColors> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: widget.selectedColor ?? pickedColor,
-                          shadowColor: widget.selectedColor ?? pickedColor,
+                          backgroundColor: selectedColor ?? pickedColor,
+                          shadowColor: selectedColor ?? pickedColor,
                           elevation: 10,
                         ),
                         child: Text(
                           '색상을 맞춰보세요',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                              color:
-                                  (widget.selectedColor?.computeLuminance() ??
-                                              pickedColor.computeLuminance()) >
-                                          0.5
-                                      ? Colors.black
-                                      : Colors.white),
+                              color: (selectedColor?.computeLuminance() ??
+                                          pickedColor.computeLuminance()) >
+                                      0.5
+                                  ? Colors.black
+                                  : Colors.white),
                         ),
                       ),
                     ],
                   )
                 : SlidePicker(
-                    sliderSize: Size(deviceWidth * 0.3, 40),
-                    pickerColor: widget.selectedColor ?? pickedColor,
-                    onColorChanged: changeColor,
+                    sliderSize: Size(deviceWidth * 0.8, 40),
+                    pickerColor: selectedColor,
+                    onColorChanged: colorProvider.setSelectedColor,
                     colorModel: ColorModel.rgb,
                     enableAlpha: false,
                     displayThumbColor: true,
@@ -194,9 +204,6 @@ class _ImageColorsState extends State<ImageColors> {
                     ),
                   ),
           ],
-        ),
-        const SizedBox(
-          height: 20,
         ),
       ],
     );
