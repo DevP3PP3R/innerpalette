@@ -8,7 +8,9 @@ import 'package:provider/provider.dart';
 import '../provider/color_provider.dart';
 import '../provider/img_provider.dart';
 import '../widget/color_picker.dart';
+import '../widget/main_color.dart';
 import 'pick_page.dart';
+import 'select_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -37,7 +39,12 @@ class HomePage extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
                   ImageSelect(),
-                  previewImage != null ? const PickPage() : Container(),
+                  (selectedColor != null)
+                      ? MainColor(
+                          deviceWidth: MediaQuery.of(context).size.width,
+                          color: selectedColor,
+                        )
+                      : const PickPage(),
                 ]),
           ),
         ),
