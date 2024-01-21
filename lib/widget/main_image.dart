@@ -22,6 +22,8 @@ class MainImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorProvider = Provider.of<ColorProvider>(context, listen: true);
+    final pickedColor = colorProvider.pickedColor;
     Future<ui.Image> loadImage(ImageProvider provider) async {
       final Completer<ui.Image> completer = Completer<ui.Image>();
       final ImageStream stream = provider.resolve(ImageConfiguration.empty);
@@ -31,7 +33,7 @@ class MainImage extends StatelessWidget {
       return completer.future;
     }
 
-    void onTap(TapDownDetails details) async {
+    void onTapDown(TapDownDetails details) async {
       final RenderBox box = context.findRenderObject() as RenderBox;
       final Offset localPosition =
           box.globalToLocal(details.globalPosition) + const Offset(10, 90);
@@ -59,14 +61,11 @@ class MainImage extends StatelessWidget {
 
       Color color = Color.fromARGB(a, r, g, b);
 
-      if (!context.mounted) {
-        return;
-      }
-      Provider.of<ColorProvider>(context, listen: true).setPickedColor(color);
+      colorProvider.setPickedColor(color);
     }
 
     return GestureDetector(
-      onTap: onTap,
+      onTapDown: onTapDown,
       child: Container(
           width: deviceWidth * 0.8,
           height: deviceWidth * 0.8,

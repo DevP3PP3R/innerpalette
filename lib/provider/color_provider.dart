@@ -7,11 +7,6 @@ class ColorProvider extends ChangeNotifier {
   Color? get selectedColor => _selectedColor;
   Color? get pickedColor => _pickedColor;
 
-  void setSelectedColorFromPicked(Color color) {
-    _selectedColor = _pickedColor;
-    notifyListeners();
-  }
-
   void setPickedColor(Color color) {
     _pickedColor = color;
     notifyListeners();
