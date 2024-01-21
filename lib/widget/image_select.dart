@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:innerpalette/widget/color_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../provider/color_provider.dart';
 import '../provider/img_provider.dart';
 
 class ImageSelect extends StatelessWidget {
@@ -44,6 +45,8 @@ class ImageSelect extends StatelessWidget {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
     final imgProvider = Provider.of<ImgProvider>(context);
+    final colorProvider = Provider.of<ColorProvider>(context);
+    final selectedColor = colorProvider.selectedColor;
     File? previewImage = imgProvider.previewImage != null
         ? File(imgProvider.previewImage!)
         : null;
@@ -85,11 +88,6 @@ class ImageSelect extends StatelessWidget {
                   )),
             ],
           ),
-          previewImage == null
-              ? Container(
-                  height: 30,
-                )
-              : const ColorPicker(),
         ],
       ),
     );

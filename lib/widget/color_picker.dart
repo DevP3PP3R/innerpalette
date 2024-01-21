@@ -5,6 +5,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:innerpalette/provider/img_provider.dart';
+import 'package:innerpalette/widget/button_row.dart';
+import 'package:innerpalette/widget/main_image.dart';
 import 'package:provider/provider.dart';
 import '../provider/color_provider.dart';
 
@@ -23,19 +25,21 @@ class ColorPicker extends StatelessWidget {
         ? File(imgProvider.previewImage!)
         : null;
 
-    return previewImage != null
-        ? ImageColors(
-            imageSize: Size(deviceWidth * 0.8, deviceWidth * 0.8),
+    return (selectedColor != null)
+        // 고른 색상 있으면 고른색상 크게 표시
+        ? Container(
+            width: deviceWidth * 0.8,
+            height: deviceWidth * 0.8,
+            decoration: BoxDecoration(
+              color: selectedColor,
+            ),
           )
-        : (selectedColor != null)
-            ? Container(
-                width: deviceWidth * 0.8,
-                height: deviceWidth * 0.8,
-                decoration: BoxDecoration(
-                  color: selectedColor,
-                ),
+        : (previewImage != null) // 고른 색상 없고 이미지 있으면
+            ? ImageColors(
+                // 색상고르기 표시
+                imageSize: Size(deviceWidth * 0.8, deviceWidth * 0.8),
               )
-            : Container();
+            : Container(); // 둘다 없으면 아무것도 안보여줌
   }
 }
 
@@ -88,16 +92,8 @@ class ImageColors extends StatelessWidget {
 
       Color color = Color.fromARGB(a, r, g, b);
 
+      if (!context.mounted) return;
       Provider.of<ColorProvider>(context, listen: true).setPickedColor(color);
-    }
-
-    void changeColor(Color color) {
-      Provider.of<ColorProvider>(context, listen: true).setSelectedColor(color);
-      Navigator.of(context, rootNavigator: true).pop();
-    }
-
-    void changeSlide(Color color) {
-      Provider.of<ColorProvider>(context, listen: true).setSelectedColor(color);
     }
 
     double deviceWidth = MediaQuery.of(context).size.width;
@@ -115,96 +111,47 @@ class ImageColors extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 15),
           child: GestureDetector(
             onTapDown: onTapDown,
-            child: Container(
-              key: imageKey,
-              width: deviceWidth * 0.8,
-              height: deviceWidth * 0.8,
-              decoration: BoxDecoration(
-                image: previewImage != null
-                    ? DecorationImage(
-                        image: FileImage(previewImage),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-              ),
-            ),
+            // child: (selectedColor == null)
+            //     ? MainImage(deviceWidth: deviceWidth, imageArea: previewImage)
+            //     : Container(
+            //         width: deviceWidth * 0.8,
+            //         height: deviceWidth * 0.8,
+            //         decoration: BoxDecoration(
+            //           color: selectedColor,
+            //         ),
+            //       ),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            (selectedColor == null)
-                ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        width: deviceWidth * 0.3,
-                        height: deviceWidth * 0.3,
-                        decoration: BoxDecoration(
-                          color: pickedColor,
+        (selectedColor == null)
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  (selectedColor == null)
+                      // 누른 색상 없으면
+                      ? ButtonRow(
+                          deviceWidth: deviceWidth,
+                          pickedColor: pickedColor,
+                          selectedColor: selectedColor,
+                          colorProvider: colorProvider)
+                      : SlidePicker(
+                          // 누른 색상 있으면
+                          sliderSize: Size(deviceWidth * 0.8, 40),
+                          pickerColor: selectedColor,
+                          onColorChanged:
+                              colorProvider.setSelectedColorFromPicked,
+                          colorModel: ColorModel.rgb,
+                          enableAlpha: false,
+                          displayThumbColor: true,
+                          showParams: true,
+                          showIndicator: true,
+                          indicatorBorderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(5),
+                            bottom: Radius.circular(5),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 30,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Text('가까운 색을 골라보세요'),
-                                ),
-                                content: SingleChildScrollView(
-                                  child: MaterialPicker(
-                                    pickerColor: selectedColor ?? pickedColor,
-                                    onColorChanged:
-                                        colorProvider.setSelectedColor,
-                                    enableLabel: false,
-                                    portraitOnly: true,
-                                    onPrimaryChanged: (pickedColor) => {},
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: selectedColor ?? pickedColor,
-                          shadowColor: selectedColor ?? pickedColor,
-                          elevation: 10,
-                        ),
-                        child: Text(
-                          '색상을 맞춰보세요',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: (selectedColor?.computeLuminance() ??
-                                          pickedColor.computeLuminance()) >
-                                      0.5
-                                  ? Colors.black
-                                  : Colors.white),
-                        ),
-                      ),
-                    ],
-                  )
-                : SlidePicker(
-                    sliderSize: Size(deviceWidth * 0.8, 40),
-                    pickerColor: selectedColor,
-                    onColorChanged: colorProvider.setSelectedColor,
-                    colorModel: ColorModel.rgb,
-                    enableAlpha: false,
-                    displayThumbColor: true,
-                    showParams: true,
-                    showIndicator: true,
-                    indicatorBorderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(5),
-                      bottom: Radius.circular(5),
-                    ),
-                  ),
-          ],
-        ),
+                ],
+              )
+            : Container(),
       ],
     );
   }
