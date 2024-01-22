@@ -48,22 +48,47 @@ class ButtonRow extends StatelessWidget {
                   Color? selectedColor = colorProvider.selectedColor;
 
                   return AlertDialog(
-                    title: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
+                    title: const Center(
                       child: Text(
-                        '가까운 색을 골라보세요',
+                        '팔레트를 둘러볼까요?',
                       ),
                     ),
                     content: SingleChildScrollView(
-                      child: MaterialPicker(
-                        pickerColor:
-                            selectedColor ?? Color(Colors.green[700]!.value),
-                        onColorChanged: (c) {
-                          colorProvider.setSelectedColor(c);
-                          Navigator.of(context, rootNavigator: true).pop();
-                        },
-                        enableLabel: false,
-                        portraitOnly: true,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: deviceWidth * 0.15,
+                                  height: deviceWidth * 0.15,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        deviceWidth * 0.25),
+                                    color: pickedColor,
+                                  ),
+                                ),
+                                const Text('가까운 색을\n골라보세요',
+                                    style: TextStyle(fontSize: 25)),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          MaterialPicker(
+                            pickerColor: selectedColor ??
+                                Color(Colors.green[700]!.value),
+                            onColorChanged: (c) {
+                              colorProvider.setSelectedColor(c);
+                              Navigator.of(context, rootNavigator: true).pop();
+                            },
+                            enableLabel: false,
+                            portraitOnly: true,
+                          ),
+                        ],
                       ),
                     ),
                   );

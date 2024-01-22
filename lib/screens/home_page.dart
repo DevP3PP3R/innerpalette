@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:innerpalette/screens/sucess_page.dart';
 import 'package:innerpalette/widget/bottom_nav_bar.dart';
 
 import 'package:innerpalette/widget/image_select.dart';
@@ -18,6 +20,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorProvider = Provider.of<ColorProvider>(context);
     final selectedColor = colorProvider.selectedColor;
+    final pickedColor = colorProvider.pickedColor;
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: const BtmNavBar(),
@@ -31,12 +34,16 @@ class HomePage extends StatelessWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
-                  ImageSelect(),
                   (selectedColor != null)
-                      ? MainColor(
-                          deviceWidth: MediaQuery.of(context).size.width,
-                          color: selectedColor,
-                        )
+                      ? (selectedColor.red - pickedColor!.red).abs() < 10 &&
+                              (selectedColor.green - pickedColor.green).abs() <
+                                  10 &&
+                              (selectedColor.blue - pickedColor.blue).abs() < 10
+                          ? const SucessPage()
+                          : MainColor(
+                              deviceWidth: MediaQuery.of(context).size.width,
+                              color: selectedColor,
+                            )
                       : const PickPage(),
                 ]),
           ),

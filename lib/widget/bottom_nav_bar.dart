@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:innerpalette/screens/sucess_page.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/color_provider.dart';
@@ -39,7 +40,7 @@ class BtmNavBar extends StatelessWidget {
         if (index == 2) {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const SettingsPage()),
+            MaterialPageRoute(builder: (context) => const SucessPage()),
           );
         }
       },
