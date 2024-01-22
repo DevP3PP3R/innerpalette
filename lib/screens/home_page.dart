@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../provider/color_provider.dart';
 import '../widget/main_color.dart';
 import 'pick_page.dart';
+import 'sucess_page.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({Key? key}) : super(key: key);
@@ -18,6 +19,26 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorProvider = Provider.of<ColorProvider>(context);
     final selectedColor = colorProvider.selectedColor;
+    final pickedColor = colorProvider.pickedColor;
+
+    if (selectedColor != null &&
+        pickedColor != null &&
+        (selectedColor.red - pickedColor.red).abs() <= 20 &&
+        (selectedColor.green - pickedColor.green).abs() <= 20 &&
+        (selectedColor.blue - pickedColor.blue).abs() <= 20) {
+      colorProvider.setSuccess();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const Dialog(
+              child: SucessPage(),
+            );
+          },
+        );
+      });
+    }
+
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: const BtmNavBar(),

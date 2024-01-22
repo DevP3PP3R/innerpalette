@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-
-import 'package:innerpalette/widget/button_row.dart';
-import 'package:innerpalette/widget/main_color.dart';
-
 import 'package:provider/provider.dart';
 
 import '../pickers/hsv_picker.dart';
 import '../provider/color_provider.dart';
+import '../widget/button_row.dart';
+import 'sucess_page.dart';
 
 class SelectPage extends StatelessWidget {
   const SelectPage({super.key});
