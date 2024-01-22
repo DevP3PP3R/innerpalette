@@ -90,12 +90,11 @@ class ImageSelect extends StatelessWidget {
                   )),
             ],
           ),
-          (previewImage == null || pickedColor == null || selectedColor == null)
-              ? Container()
-              : SlidePicker(
+          (selectedColor != null)
+              ? SlidePicker(
                   indicatorSize: Size(deviceWidth * 0.8, 130),
                   sliderSize: Size(deviceWidth * 0.8, 30),
-                  pickerColor: selectedColor ?? Color(Colors.green[700]!.value),
+                  pickerColor: selectedColor,
                   onColorChanged: colorProvider.setSelectedColor,
                   colorModel: ColorModel.rgb,
                   enableAlpha: false,
@@ -104,7 +103,8 @@ class ImageSelect extends StatelessWidget {
                   showIndicator: true,
                   indicatorBorderRadius:
                       const BorderRadius.vertical(top: Radius.circular(25)),
-                ),
+                )
+              : Container(),
         ],
       ),
     );
