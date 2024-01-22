@@ -23,9 +23,9 @@ class HomePage extends StatelessWidget {
 
     if (selectedColor != null &&
         pickedColor != null &&
-        (selectedColor.red - pickedColor.red).abs() <= 20 &&
-        (selectedColor.green - pickedColor.green).abs() <= 20 &&
-        (selectedColor.blue - pickedColor.blue).abs() <= 20) {
+        (selectedColor.red - pickedColor.red).abs() <= 15 &&
+        (selectedColor.green - pickedColor.green).abs() <= 15 &&
+        (selectedColor.blue - pickedColor.blue).abs() <= 15) {
       colorProvider.setSuccess();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         showDialog(
